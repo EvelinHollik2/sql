@@ -1,0 +1,11 @@
+join_alap
+
+Melyik adatok vannak benne a t1, t2-ben is:
+SELECT t1.num, t2.num 
+FROM t1 JOIN t2 ON t1.num = t2.num;
+
+Melyik adatok vannak benne a t1, t2, t3-ban is:
+SELECT t1.num, t2.num 
+FROM t1 JOIN t2 ON t1.num = t2.num
+	JOIN t3 ON t2.num = t3.num;
+

@@ -1,0 +1,50 @@
+https://dev.mysql.com/doc/refman/8.0/en/numeric-functions.html
+
+SQL -- szabványos lekérdező nyelv, relációs adatbázisok kezelésére van kitalálva
+- hálós -- bármilyában tudunk keresni
+- hierarchikus -- csak egy formában tudunk keresni
+- relációs -- az adatok táblázatosan vannak tárolva, ugyan abban a ssorban van az összes adat, egy táblában vannak, a tulajdonság értékek különböztetik meg őket.
+
+Szerkezet kialakítása
+- CREATE -- ADATBÁZIS LÉTREHOZÁSA
+- DROP -- MEGSZÜNETJÜK A TÁROLÁSI SZERKEZETET
+- ALTER -- ADAT SZERKEZET MÓDOSÍTÁSA
+- SHOW -- ADAT SZERKEZET MEGJELENÍTÉSE
+
+Adatelérés
+- SELECT -- LEKÉRDEZ
+- UPDATE -- MEGLÉVŐ ADAT VÁLTOZATÁSA
+- DELETE -- ADAT TÖRLÉS
+- INSERT -- ADAT HOZZÁADÁS
+
+záradék = clausa
+SELECT záradékai (amit látni szeretnénk, oszlopokat sorolunk fel, vesszővel választjuk el a táblákat felsoroláskor)
+- FROM -- honnan vannak az adatok a válasz megadásához (táblákat, kapcsolataikkal együtt)
+- WHERE -- forrásadatok soronkénti szűrése
+- GROUP BY -- csoportosítás (oszlopos csoportosítás) ehhez tarozik a having
+- HAVING -- CSOPORTOSÍTOTT táblás ADATOK SZŰRÉSE
+- ORDER BY -- eredmények rendezése
+- LIMIT -- megjelenítendő sorok szabályozása
+
+LIKE -- szövegben kereső operátor
+IN --  vagy helyettesítő összekötés
+AS -- fejlécben megjelenő név átnevezése
+(NULL -- nem létező adat, nincs tipusa)
+IS -- létezik e vagy sem (IS NOT NULL)
+
+AVG -- összehasonlítás
+JOIN -- táblák összekapcsolása
+NATURAL JOIN -- megkeresi az összekötési értéket, azonos nevű és azonos típusú
+ON -- kapcsolat alapja
+DATE() -- dátum, idő értékből év, hónap, nap értéket adja vissza
+LEFT / RIGHT -- melyik oldalról kérjük le az összes adatot
+ROUND(....0) -- egészre kerekítés
+USING -- többszörös kulcs, több táblában ugyan olyan nevű mező van
+
+CASE - END utasítás:
+-- többszorös elágazást tesz lehetővé, csak azt állítja elő amit akarunk
+
+kommentelés: -- (minusz, minusz, szóköz)
+
+abszolut érték : csak pozitív értékek lesznek (ABS())
+

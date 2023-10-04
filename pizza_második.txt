@@ -1,0 +1,144 @@
+26. Melyik a legdrágább pizza?
+SELECT pnev FROM `pizza`  
+ORDER BY `pizza`.`par` DESC
+LIMIT 1;
+
+SELECT pnev FROM `pizza`  
+WHERE pizza.par = (SELECT MAX(pizza.par) FROM pizza);
+
+27. Ki szállította házhoz a legtöbb pizzát?
+SELECT futar.fnev, SUM(tetel.db) AS osszesen
+FROM futar JOIN rendeles ON futar.fazon = rendeles.fazon
+JOIN tetel ON rendeles.razon = tetel.razon
+GROUP BY futar.fnev  
+ORDER BY `osszesen` DESC
+LIMIT 1;
+
+28. Ki ette a legtöbb pizzát?
+SELECT vevo.vnev, SUM(tetel.db) AS darab
+FROM vevo JOIN rendeles ON vevo.vazon = rendeles.vazon
+JOIN tetel ON rendeles.razon = tetel.razon
+JOIN pizza ON tetel.pazon = pizza.pazon
+GROUP BY vevo.vnev  
+ORDER BY `darab` DESC
+LIMIT 1;
+
+29. Melyik nap fogyott a legtöbb pizza?
+SELECT DATE(rendeles.idopont) AS datum
+FROM rendeles JOIN tetel ON rendeles.razon = tetel.razon
+GROUP BY DATE(rendeles.idopont)  
+ORDER BY SUM(tetel.db) DESC
+LIMIT 1;
+
+30. Melyik nap fogyott a legtöbb Hawaii pizza?
+SELECT pizza.pnev, DATE(rendeles.idopont) AS datum, SUM(tetel.db) AS fogyott
+FROM rendeles JOIN tetel ON rendeles.razon = tetel.razon
+JOIN pizza ON tetel.pazon = pizza.pazon
+WHERE pizza.pnev = "Hawaii"
+GROUP BY DATE(rendeles.idopont)
+ORDER BY `fogyott` DESC
+LIMIT 1;
+
+31. Hány pizza fogyott a legforgalmasabb napon?
+SELECT DATE(rendeles.idopont) AS datum, SUM(tetel.db) AS fogyott
+FROM rendeles JOIN tetel ON rendeles.razon = tetel.razon
+GROUP BY DATE(rendeles.idopont)  
+ORDER BY `fogyott` DESC
+LIMIT 1;
+
+32. Mennyi volt a bevétel a legjobb napon?
+SELECT SUM(pizza.par) AS bevétel
+FROM rendeles JOIN tetel ON rendeles.razon = tetel.razon
+JOIN pizza ON tetel.pazon = pizza.pazon
+GROUP BY DATE(rendeles.idopont)  
+ORDER BY `bevétel` DESC
+LIMIT 1;
+
+33. Mi Szundi kedvenc pizzája?
+SELECT vevo.vnev, pizza.pnev
+FROM vevo JOIN rendeles ON vevo.vazon = rendeles.vazon
+JOIN tetel ON rendeles.razon = tetel.razon
+JOIN pizza ON tetel.pazon = pizza.pazon
+WHERE vevo.vnev="Szundi"
+GROUP BY vevo.vnev;
+
+34. Kik rendeltek pizzát a nyitás napján?
+SELECT vevo.vnev, rendeles.idopont
+FROM vevo JOIN rendeles ON vevo.vazon = rendeles.vazon
+GROUP BY vevo.vnev  
+ORDER BY `rendeles`.`idopont` ASC
+LIMIT 1;
+
+35. Mely pizzák olcsóbbak a Capricciosa pizzánál?
+SELECT pizza.pnev, pizza.par
+FROM pizza
+WHERE pizza.pnev <> "Capricciosa";
+
+36. Mely pizzák drágábbak az átlagosnál?
+
+37. Mely pizza ára van legközelebb az átlagárhoz?
+
+38. Mely futárok mentek többet házhoz az átlagosnál?
+SELECT futar.fnev, COUNT(rendeles.fazon) AS db
+FROM futar NATURAL JOIN rendeles 
+GROUP BY futar.fazon
+HAVING COUNT(rendeles.fazon) > (SELECT AVG(t1.db)
+FROM(SELECT futar.fnev, COUNT(rendeles.fazon) AS db
+FROM futar NATURAL JOIN rendeles
+GROUP BY futar.fazon) AS t1);
+
+39. Kik rendeltek legalább háromszor annyi pizzát, mint egy átlagos vevő?
+SELECT vevo.vnev
+FROM vevo NATURAL JOIN rendeles NATURAL JOIN tetel
+GROUP BY vevo.vazon
+HAVING SUM(tetel.db) > 3* (SELECT AVG(t1.darab)
+FROM(SELECT SUM(tetel.db) AS darab
+FROM vevo NATURAL JOIN rendeles NATURAL JOIN tetel
+WHERE 1
+GROUP BY vevo.vazon) AS t1);
+
+40. Kik szállítottak házhoz legalább tízszer?
+SELECT futar.fnev, COUNT(rendeles.fazon) AS db
+FROM futar NATURAL JOIN rendeles
+GROUP BY futar.fazon
+HAVING db > 10;
+
+41. Mely pizzából fogyott legalább 50 db?
+SELECT pizza.pazon
+FROM pizza NATURAL JOIN tetel
+GROUP BY pizza.pazon
+HAVING SUM(tetel.db) >= 50;
+
+42. Mely vevők nem rendeltek legalább háromszor?
+
+
+43. Kik rendeltek legalább 5 Hawaii pizzát?
+
+44. Milyen pizzából nem rendelt soha Tudor?
+
+45. Van-e olyan pizza, amelyből soha nem rendeltek?
+
+46. Ki nem rendelt soha Vesuvio pizzát?
+
+47. Mely pizzafutárokkal nem találkoztak az egyes vevők?
+
+48. Kik rendeltek több Sorrento pizzát, mint Vesuviot?
+
+49. Kik rendeltek legalább 5 Capricciosa vagy 8 Frutti di Mare pizzát?
+SELECT vevo.vnev, pizza.pnev, SUM(tetel.db) AS db
+FROM vevo LEFT JOIN rendeles ON vevo.vazon=rendeles.vazon
+    JOIN tetel ON rendeles.razon=tetel.razon
+    RIGHT JOIN pizza ON pizza.pazon=tetel.pazon
+GROUP BY vevo.vazon, pizza.pazon
+HAVING (pizza.pnev="Frutti di Mare" AND db >= 8)
+    OR
+    (pizza.pnev="Capricciosa" AND db >=5);
+
+50. Kik rendeltek kétfajta pizzából is legalább 10 darabot?
+SELECT t1.vnev, COUNT(*) AS db
+FROM (SELECT vevo.vnev, tetel.pazon, SUM(tetel.db) AS db
+FROM vevo NATURAL JOIN rendeles NATURAL JOIN tetel
+GROUP BY vevo.vazon, tetel.pazon
+HAVING db >=4) AS t1
+GROUP BY t1.vnev
+HAVING db>1;

@@ -1,0 +1,6 @@
+egytablasok -- berek
+
+Ki írjuk részlegekként és nemekként csoportosítva az átlag bért
+SELECT berek2020.Részleg, berek2020.Neme, AVG(berek2020.Bér)
+FROM `berek2020`
+GROUP BY Részleg, Neme;

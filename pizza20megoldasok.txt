@@ -1,0 +1,117 @@
+-- 1. HOGY HÍVJÁK AZ EGYES PIZZAFUTÁROKAT?
+SELECT futar.fnev
+FROM futar;
+
+-- 2. Milyen pizzák közül lehet rendelni, és mennyibe kerülnek?
+SELECT pizza.pnev, pizza.par
+FROM pizza;
+
+-- 3. Mennyibe kerül átlagosan egy pizza?
+SELECT ROUND(AVG(pizza.par),0)
+FROM pizza;
+
+-- 4. Mely pizzák olcsóbbak 1000 Ft-nál?
+SELECT pizza.pnev, pizza.par
+FROM pizza
+WHERE pizza.par < 1000;
+
+-- 5. Ki szállította házhoz az első (egyes sorszámú) rendelést?
+SELECT futar.fnev, rendeles.razon
+FROM futar JOIN rendeles ON futar.fazon= rendeles.razon
+WHERE rendeles.razon = 1;
+
+-- 6. Kik rendeltek pizzát délelőtt?
+SELECT DISTINCT vevo.vnev
+FROM rendeles
+JOIN vevo ON rendeles.razon = vevo.vazon
+WHERE TIME(rendeles.idopont) < '12:00:00';
+
+7. Milyen pizzákat evett Morgó?
+SELECT vevo.vnev, pizza.pnev
+FROM vevo JOIN rendeles ON vevo.vazon = rendeles.vazon
+JOIN tetel ON rendeles.razon = tetel.razon
+JOIN pizza ON tetel.pazon = pizza.pazon
+WHERE vevo.vnev = "Morgó"
+GROUP BY pizza.pnev;
+
+8. Ki szállított házhoz Tudornak?
+SELECT futar.fnev
+FROM futar
+JOIN rendeles ON futar.fazon = rendeles.fazon
+JOIN vevo ON rendeles.vazon = vevo.vazon
+WHERE vevo.vnev = 'Tudor';
+
+9. Az egyes rendelések alkalmával ki kinek szállított házhoz?
+SELECT rendeles.razon, futar.fnev, vevo.vnev
+FROM rendeles JOIN futar ON rendeles.fazon = futar.fazon
+		JOIN vevo ON rendeles.vazon = vevo.vazon
+            	GROUP BY rendeles.razon;
+
+10. Mennyit költött pizzára Vidor?
+SELECT SUM(pizza.par*tetel.db) AS osszesen 
+FROM pizza JOIN tetel ON pizza.pazon = tetel.pazon 
+		 JOIN rendeles ON rendeles.razon = tetel.razon 
+		 JOIN vevo ON rendeles.vazon = vevo.vazon 
+WHERE vevo.vnev = "Vidor";
+
+11. Hány alkalommal rendelt Sorrento pizzát Kuka?
+SELECT vevo.vnev, COUNT(*) AS alkalom
+FROM vevo JOIN rendeles ON rendeles.vazon
+JOIN tetel ON rendeles.razon = tetel.razon
+JOIN pizza ON tetel.pazon= pizza.pazon
+WHERE vevo.vnev = 'Kuka' AND pizza.pnev = 'Sorrento';;
+
+12. Hány pizzát evett Szende?
+SELECT vevo.vnev, SUM(tetel.db) AS osszeg
+FROM vevo JOIN rendeles ON vevo.vazon = rendeles.vazon
+JOIN tetel ON rendeles.vazon = tetel.razon
+WHERE vevo.vnev = 'Szende'
+GROUP BY vevo.vnev;
+
+13. Hányszor rendelt pizzát Hapci?
+SELECT vevo.vnev, COUNT(tetel.db) AS darab
+FROM vevo JOIN rendeles ON vevo.vazon = rendeles.vazon
+JOIN tetel ON rendeles.razon = tetel.razon
+WHERE vevo.vnev = "Hapci";
+
+14. Hány darab Hawaii pizza fogyott összesen?
+SELECT SUM(tetel.db) AS osszesen_fogyott
+FROM tetel JOIN pizza ON tetel.pazon = pizza.pazon
+WHERE pizza.pnev = 'Hawaii';
+
+15. Mennyit költöttek pizzára az egyes vevők?
+SELECT vevo.vnev, SUM(pizza.par) AS osszeg
+FROM vevo JOIN rendeles ON vevo.vazon = rendeles.vazon
+JOIN tetel ON rendeles.razon = tetel.razon
+JOIN pizza ON tetel.pazon = pizza.pazon
+GROUP BY vevo.vnev;
+
+16. Mennyit vettek az egyes vevők a különböző pizzákból?
+SELECT pizza.pnev, SUM(tetel.db) AS osszeg
+FROM vevo JOIN rendeles ON vevo.vazon = rendeles.vazon
+JOIN tetel ON rendeles.razon = tetel.razon
+JOIN pizza ON tetel.pazon = pizza.pazon
+GROUP BY pizza.pnev;
+
+17. Ki hány pizzát szállított házhoz az egyes napokon?
+SELECT futar.fnev, DATE(rendeles.idopont) AS datum, SUM(tetel.db) AS osszesen
+FROM futar JOIN rendeles ON futar.fazon = rendeles.fazon
+JOIN tetel ON rendeles.razon = tetel.razon
+GROUP BY futar.fnev;
+
+18. Ki hány pizzát rendelt az egyes napokon?
+SELECT vevo.vnev, DATE(rendeles.idopont) AS datum, SUM(tetel.db) AS osszeg
+FROM vevo JOIN rendeles ON vevo.vazon = rendeles.vazon
+JOIN tetel ON rendeles.razon = tetel.razon
+GROUP BY vevo.vnev, DATE(rendeles.idopont);
+
+19. Mennyi volt a bevétel az egyes napokon?
+SELECT DATE(rendeles.idopont) AS datum, SUM(pizza.par) AS bevétel
+FROM rendeles JOIN tetel ON rendeles.razon = tetel.razon
+JOIN pizza ON tetel.pazon = pizza.pazon
+GROUP BY DATE(rendeles.idopont);
+
+20. Hány pizza fogyott naponta?
+SELECT DATE(rendeles.idopont) AS datum, SUM(tetel.db) AS fogyott
+FROM rendeles JOIN tetel ON rendeles.razon = tetel.razon
+GROUP BY DATE(rendeles.idopont);

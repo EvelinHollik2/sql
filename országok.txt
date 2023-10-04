@@ -1,0 +1,279 @@
+-- 1.Mi MADAGASZKÁR fővárosa?
+SELECT fovaros 
+FROM `orszagok` 
+WHERE orszag LIKE "MADAGASZKÁR";
+
+-- 2.Melyik ország fővárosa OUAGADOUGOU?
+SELECT orszag 
+FROM `orszagok` 
+WHERE fovaros LIKE "OUAGADOUGOU";
+
+-- 3.Melyik ország autójele a TT? 
+SELECT orszag 
+FROM `orszagok` 
+WHERE autojel LIKE "TT";
+
+-- 4.Melyik ország pénzének jele az SGD?
+SELECT orszag 
+FROM `orszagok` 
+WHERE penzjel LIKE "SGD";
+
+-- 5.Melyik ország nemzetközi telefon-hívószáma a 61?
+SELECT orszag 
+FROM `orszagok` 
+WHERE telefon LIKE "61%";
+
+-- 6.Mekkora területű Monaco?
+SELECT terulet 
+FROM `orszagok` 
+WHERE fovaros LIKE "Monaco";
+
+-- 7.Hányan laknak Máltán? 
+SELECT nepesseg*1000
+FROM `orszagok` 
+WHERE orszag LIKE "Málta";
+
+-- 8.Mennyi Japán népsűrűsége? 
+SELECT orszag, nepesseg/terulet*1000 AS nepsuruseg 
+FROM `orszagok` 
+WHERE orszag LIKE "Japán";
+
+-- 9.Hány lakosa van a Földnek?
+SELECT SUM(nepesseg)/1000000 AS milliard_fo 
+FROM `orszagok`;
+
+-- 10.Mennyi az országok területe összesen?
+SELECT SUM(terulet) AS "Országok területe"
+FROM `orszagok`;
+
+-- 11.Mennyi az országok átlagos népessége?
+SELECT AVG(nepesseg)
+FROM `orszagok`;
+
+-- 12.Mennyi az országok átlagos területe?
+SELECT AVG(terulet)
+FROM `orszagok`;
+
+-- 13.Mennyi a Föld népsűrűsége?
+SELECT SUM(nepesseg)/ SUM(terulet) *1000 AS "Föld népsűrüsége"
+FROM `orszagok`;
+
+-- 14.Hány 1.000.000 km2-nél nagyobb területű ország van?
+SELECT COUNT(*)
+FROM `orszagok`
+WHERE terulet > "1000000";
+
+-- 15.Hány 100 km2-nél kisebb területű ország van?
+SELECT COUNT(*)
+FROM `orszagok`
+WHERE terulet < "100";
+
+-- 16.Hány 20.000 főnél kevesebb lakosú ország van?
+SELECT COUNT(*)
+FROM `orszagok`
+WHERE nepesseg < "20";
+
+-- 17.Hány országra igaz, hogy területe kisebb 100 km2-nél, vagy pedig a lakossága kevesebb 20.000 főnél?
+SELECT COUNT(*)
+FROM `orszagok`
+WHERE terulet < "100" OR nepesseg < "20000";
+
+-- 18.Hány ország területe 50.000 és 150.000 km2 közötti?
+SELECT COUNT(*)
+FROM `orszagok`
+WHERE terulet BETWEEN "50000" AND "150000";
+
+-- 19.Hány ország lakossága 8 és 12 millió közötti?
+SELECT COUNT(*)
+FROM `orszagok`
+WHERE nepesseg BETWEEN "8000" AND "12000";
+
+-- 20.Mely fővárosok népesebbek 20 millió főnél?
+SELECT fovaros
+FROM `orszagok`
+WHERE nepesseg > "20000";
+
+-- 21.Mely országok népsűrűsége nagyobb 500 fő/km2-nél?
+SELECT orszag
+FROM `orszagok`
+WHERE nepesseg/terulet *100 > "500";
+
+-- 22.Hány ország államformája köztársaság?
+SELECT orszag
+FROM `orszagok`
+WHERE allamforma LIKE "köztársaság";
+
+-- 23.Mely országok pénzneme a kelet-karib dollár?
+SELECT orszag
+FROM `orszagok`
+WHERE penznem LIKE "kelet-karib dollár";
+
+-- 24.Hány ország nevében van benne az "ORSZÁG" szó?
+SELECT Count(*)
+FROM `orszagok`
+WHERE orszag LIKE "%ország%";
+
+-- 25.Mely országokban korona a hivatalos fizetőeszköz?
+SELECT orszag
+FROM `orszagok`
+WHERE penznem LIKE "%korona%";
+
+-- 26.Mennyi Európa területe?
+SELECT SUM(terulet)
+FROM `orszagok`
+WHERE foldr_hely LIKE "%Európa%";
+
+-- 27.Mennyi Európa lakossága?
+SELECT SUM(nepesseg)
+FROM `orszagok`
+WHERE `foldr_hely` LIKE "%Európa%";
+
+-- 28.Mennyi Európa népsűrűsége??
+SELECT SUM(nepesseg)/ SUM(terulet)*100 AS nepsuruseg
+FROM `orszagok`
+WHERE `foldr_hely` LIKE "%Európa%";
+
+-- 29.Hány ország van Afrikában?
+SELECT COUNT(orszag)
+FROM `orszagok`
+WHERE `foldr_hely` LIKE "%Afrika%";
+
+-- 30.Mennyi Afrika lakossága?
+SELECT SUM(nepesseg)
+FROM `orszagok`
+WHERE `foldr_hely` LIKE "%Afrika%";
+
+-- 31.Mennyi Afrika népsűrűsége?
+SELECT SUM(nepesseg)/ SUM(terulet)*1000 AS nepsuruseg
+FROM `orszagok`
+WHERE `foldr_hely` LIKE "%Afrika%";
+
+-- 32.Melyek a szigetországok?
+SELECT orszag, foldr_hely
+FROM `orszagok`
+WHERE `foldr_hely` LIKE "%szigetország%";
+
+-- 33.Mely országok államformája hercegség, vagy királyság?
+SELECT orszag
+FROM `orszagok`
+WHERE `allamforma` IN("hercegség", "királyság");
+
+-- 34.Hány országnak nincs autójelzése?
+SELECT COUNT(*)
+FROM `orszagok`
+WHERE `autojel` = " ";
+
+-- 35.Mennyi a váltószáma az aprópénznek azokban az országokban, ahol nem 100?
+SELECT valtopenz
+FROM `orszagok`
+WHERE `valtopenz` <> "100";
+
+-- 36.Hány ország területe kisebb Magyarországénál?
+SELECT COUNT(*)
+FROM `orszagok`
+WHERE `terulet` < (SELECT terulet FROM orszagok WHERE orszag = "Magyarország");
+
+-- 37.Melyik a legnagyobb területű ország, és mennyi a területe?
+SELECT orszag,terulet
+FROM `orszagok`
+WHERE `terulet` = (SELECT MAX(terulet) FROM orszagok);
+
+-- 38.Melyik a legkisebb területű ország, és mennyi a területe?
+SELECT orszag,terulet
+FROM `orszagok`
+WHERE `terulet` = (SELECT MIN(terulet) FROM orszagok);
+
+-- 39.Melyik a legnépesebb ország, és hány lakosa van?
+SELECT orszag, nepesseg
+FROM `orszagok`
+WHERE `nepesseg` = (SELECT MAX(nepesseg) FROM orszagok);
+
+-- 40.Melyik a legkisebb népességű ország, és hány lakosa van?
+SELECT orszag, nepesseg
+FROM `orszagok`
+WHERE `nepesseg` = (SELECT MIN(nepesseg) FROM orszagok);
+
+-- 41.Melyik a legsűrűbben lakott ország, és mennyi a népsűrűsége?
+SELECT orszag, nepesseg/terulet *1000
+FROM `orszagok`  
+ORDER BY `nepesseg/terulet *1000` DESC LIMIt 1
+
+-- 42.Melyik a legritkábban lakott ország, és mennyi a népsűrűsége?
+SELECT orszag, nepesseg/terulet *1000
+FROM `orszagok`  
+ORDER BY `nepesseg/terulet *1000` ASC LIMIt 1;
+
+-- 43.Melyik a legnagyobb afrikai ország és mekkora?
+SELECT orszag, terulet
+FROM `orszagok`
+WHERE `foldr_hely` LIKE "%Afrika%" LIMIT 1;
+
+-- 44.Melyik a legkisebb amerikai ország és hányan lakják?
+SELECT orszag, nepesseg*1000
+FROM `orszagok`
+WHERE `foldr_hely` LIKE "%Amerika%"  
+ORDER BY `orszagok`.`nepesseg` ASC LIMIT 1;
+
+-- 45.Melyik az első három legsűrűbben lakott "országméretű" ország (tehát nem város- vagy törpeállam)? 
+SELECT orszag, nepesseg/terulet*1000 AS nepsuruseg
+FROM `orszagok`
+WHERE `foldr_hely` NOT LIKE "%városállam%" 
+AND `foldr_hely` NOT LIKE "%törpeállam%" 
+ORDER BY nepsuruseg DESC
+LIMIT 0,3;
+
+-- 46.Melyik a világ hat legnépesebb fővárosa?
+SELECT fovaros
+FROM `orszagok`
+ORDER BY `nepesseg` DESC
+LIMIT 6;
+
+-- 47.Melyik tíz ország egy főre jutó GDP-je a legnagyobb? 
+SELECT `orszag`, `gdp`/`nepesseg` /1000
+FROM `orszagok`
+ORDER BY `gdp` DESC
+LIMIT 10;
+
+-- 48.Melyik tíz ország össz-GDP-je a legnagyobb? 
+SELECT `orszag`, `gdp`
+FROM `orszagok`
+ORDER BY `gdp` DESC
+LIMIT 10;
+
+-- 49.Melyik országban a legszegényebbek az emberek?
+SELECT `orszag`, `nepesseg`, `gdp`
+FROM `orszagok`
+ORDER BY `gdp` ASC
+LIMIT 1;
+
+-- 50.Melyik a 40. legkisebb területű ország?
+SELECT `orszag`, `terulet`
+FROM `orszagok`
+ORDER BY terulet ASC
+LIMIT 39,1;
+
+-- 51.Melyik a 15. legkisebb népsűrűségű ország?
+SELECT `orszag`, `nepesseg`/`terulet` *1000 AS nepsuruseg
+FROM `orszagok`
+ORDER BY nepsuruseg DESC
+LIMIT 14,1;
+
+-- 52.Melyik a 61. legnagyobb népsűrűségű ország?
+SELECT `orszag`, `nepesseg`/`terulet` *1000 AS nepsuruseg
+FROM `orszagok`
+ORDER BY nepsuruseg ASC
+LIMIT 60,1;
+
+-- 53.Melyik három ország területe hasonlít leginkább Magyaroszág méretéhez?
+SELECT `orszag`, ABS(`terulet` - (SELECT `terulet` FROM `orszagok` WHERE `orszag` = 'Magyarország')) AS elteres
+FROM `orszagok`
+WHERE `orszag` != "Magyarország"
+ORDER BY elteres
+LIMIT 3;
+
+-- 54.Az emberek hányadrésze él Ázsiában?
+SELECT SUM(nepesseg)/ (SELECT SUM(nepesseg) FROM orszagok) AS azsiaiak_araanya
+FROM `orszagok`
+WHERE `foldr_hely` LIKE "%Ázsia%";
+
+
