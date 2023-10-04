@@ -1,0 +1,11 @@
+1.1. Feladat 
+Listázza ki a 20-as részleg dolgozóinak nevét, belépési idejét, foglalkozását a nevek szerint 
+csökkenően rendezve. (F01-01.sql) 
+SELECT emp.ENAME, emp.HIREDATE, emp.JOB
+from emp
+WHERE emp.DEPTNO = 20  
+ORDER BY emp.ENAME DESC;
+
+1.2. Feladat 
+Készítsen két listát, melyek a dolgozók adatait tartalmazzák. Az egyiket a fizetés szerint 
+növekvően, a másikat a fizetés szerint csökkenően rendezze.
